@@ -2,9 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// import OtpModal from "@/components/OTPModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { createAccount } from "../lib/actions/user.actions";
+import OtpModal from "./OTPModal";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -15,7 +16,6 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-// import { createAccount, signInUser } from "../lib/actions/user.actions";
 
 const authFormSchema = (formType) => {
   return z.object({
@@ -47,21 +47,22 @@ const AuthForm = ({ type }) => {
 
     try {
       const user =
-        type === "signup"
+        type === "Signup"
           ? await createAccount({
               fullName: values.fullName || "",
               email: values.email,
             })
-          : await signInUser({ email: values.email });
-
-      setAccountId(user.accountId);
-    } catch {
+          : ''
+      
+      console.log(user);
+      setAccountId(user.id);
+    } catch (er) {
+      console.log(er)
       setErrorMessage("Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
-  console.log(type);
 
   return (
     <>
@@ -153,9 +154,9 @@ const AuthForm = ({ type }) => {
         </form>
       </Form>
 
-      {/* {accountId && (
+      {accountId && (
         <OtpModal email={form.getValues("email")} accountId={accountId} />
-      )} */}
+      )}
     </>
   );
 };
